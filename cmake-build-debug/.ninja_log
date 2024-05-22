@@ -1,0 +1,5 @@
+# ninja log v5
+2	39	1716388140509184294	untitled3	f9e7707da9853bca
+5	216	1716384815037358133	CMakeFiles/untitled3.dir/mongoose/mongoose.c.o	b5b5b5a2688baa1f
+1	45	1716387479264301594	CMakeFiles/untitled3.dir/main.c.o	63bc390d0ceb19e1
+1	35	1716395699978961439	build.ninja	37a01ee42e85534
