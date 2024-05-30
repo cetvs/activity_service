@@ -4,8 +4,8 @@
 
 #include <sqlite3.h>
 #include <stdio.h>
-#include "../activity_info.h"
-#include "AlertAction.h"
+#include "../model/EOP_action_alert.h"
+#include "../EOP_activity_tables.h"
 
 int openDatabase(sqlite3 *db) {
     if (sqlite3_open("mydatabase.db", &db) != SQLITE_OK) {
@@ -41,30 +41,9 @@ int create_table_request(char *sql) {
 }
 
 int create_activity_info_table() {
-    const char *historyRecord = "CREATE TABLE IF NOT EXISTS HistoryRecord ("
-                                "id INTEGER PRIMARY KEY,"
-                                "userId Text,"
-                                "actionAlertId INTEGER,"
-                                "actionErrorId INTEGER,"
-                                "description TEXT,"
-                                "time TEXT"
-                                ")";
-    create_table_request(historyRecord);
-
-    const char *action = "CREATE TABLE IF NOT EXISTS AlertAction ("
-                         "id INTEGER PRIMARY KEY,"
-                         "name TEXT,"
-                         "description TEXT"
-                         ")";
-    create_table_request(action);
-
-    const char *actionType = "CREATE TABLE IF NOT EXISTS ErrorAction ("
-                             "id INTEGER PRIMARY KEY,"
-                             "name TEXT,"
-                             "description TEXT,"
-                             "criticalLevel INT"
-                             ")";
-    create_table_request(actionType);
+    create_table_request(EOP_Activity_History_Record_Table_create);
+    create_table_request(EOP_activity_alert_activity_Table_create);
+    create_table_request(EOP_activity_error_action_table_create);
 }
 
 int drop_table(char *tableName) {
@@ -105,12 +84,6 @@ int drop_activity_info_table() {
 
     char *actionError = "AlertAction";
     drop_table(actionError);
-
-//    char *errorAlert = "ErrorAction";
-//    drop_table(errorAlert);
-//
-//    char *actionError = "AlertAction";
-//    drop_table(actionError);
 }
 
 int execute_query(char *sql_query) {
@@ -147,7 +120,7 @@ int execute_query(char *sql_query) {
     return 0;
 }
 
-int insert_alert_action(AlertAction alertAction) {
+int insert_alert_action(EOP_action_alert alertAction) {
     printf("insert_action_type actionType name: %s\n", alertAction.name);
 
     sqlite3 *db;
@@ -159,7 +132,7 @@ int insert_alert_action(AlertAction alertAction) {
     char insertSql[200];
     snprintf(insertSql,
              sizeof(insertSql),
-             "INSERT INTO AlertAction (name, description) VALUES ('%s', %s)",
+             "INSERT INTO EOP_action_alert (name, description) VALUES ('%s', %s)",
              alertAction.name,
              alertAction.description
     );
@@ -185,7 +158,7 @@ int select_alert_action() {
     openDatabase(db);
 
     char *err;
-    char *sql = "SELECT * FROM AlertAction";
+    char *sql = "SELECT * FROM EOP_action_alert";
     sqlite3_stmt *stmt;
 
     // 2. Подготовить запрос

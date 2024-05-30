@@ -9,12 +9,12 @@ add_executable(
         untitled3 main.c
         third_party/mongoose/mongoose.c
         third_party/mongoose/mongoose.h
-        EOP/activity/controllers/activity_controller.h
-        EOP/activity/data/activity_info.h
-        EOP/activity/controllers/activity_controller.c
-        EOP/activity/data/dto/activity_dto.h
-        EOP/activity/data/dto/activity_dto.c
-        EOP/activity/data/dto/AlertAction.h
+        EOP/activity/controllers/EOP_activity_controller.h
+        EOP/activity/controllers/EOP_activity_controller.c
+        EOP/activity/data/dao/EOP_activity_dao.h
+        EOP/activity/data/dao/EOP_activity_dao.c
+        EOP/activity/data/model/EOP_action_alert.h
+        EOP/activity/data/EOP_activity_tables.h
 )
 
 include_directories(${SQLite3_INCLUDE_DIR})

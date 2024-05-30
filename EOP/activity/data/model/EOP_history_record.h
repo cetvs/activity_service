@@ -5,13 +5,13 @@
 #ifndef UNTITLED3_ACTION_H
 #define UNTITLED3_ACTION_H
 
-typedef struct HistoryRecord {
+typedef struct EOP_history_record {
     int id;
     int userId;
     int actionAlertId;
     int errorAlertId;
     int description;
     int timestamp;
-} HistoryRecord;
+} EOP_history_record;
 
 #endif //UNTITLED3_ACTION_H

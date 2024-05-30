@@ -5,11 +5,11 @@
 #ifndef UNTITLED3_ACTION_H
 #define UNTITLED3_ACTION_H
 
-typedef struct ErrorAction {
+typedef struct EOP_error_action {
     int id;
     char name[100];
     char description[100];
     int criticalLevel;
-} ErrorAction;
+} EOP_error_action;
 
 #endif //UNTITLED3_ACTION_H
