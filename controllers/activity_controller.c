@@ -5,7 +5,7 @@
 #include "../mongoose/mongoose.h"
 #include "../data/activity_info.h"
 
-static void activity_cotroller_post_activity_info(struct mg_connection *c, int ev, void *ev_data) {
+void activity_cotroller_post_activity_info(struct mg_connection *c, int ev, void *ev_data) {
     if (ev == MG_EV_HTTP_MSG) {
         struct mg_http_message *hm = (struct mg_http_message *) ev_data;
         bool is_match = mg_match(hm->uri, mg_str("/api/sum"), NULL);

@@ -14,6 +14,7 @@ add_executable(
         controllers/activity_controller.c
         data/dto/activity_dto.h
         data/dto/activity_dto.c
+        data/dto/AlertAction.h
 )
 
 include_directories(${SQLite3_INCLUDE_DIR})

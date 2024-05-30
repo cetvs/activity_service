@@ -6,8 +6,18 @@
 #define UNTITLED3_ACTIVITY_DTO_H
 
 #include "../activity_info.h"
+#include "AlertAction.h"
 
 int create_activity_info_table();
-void add_new_record_activity_info(activity_info data);
+
+int create_table_request(char *sql);
+
+int drop_activity_info_table();
+
+int drop_table(char *tableName);
+
+int insert_alert_action(AlertAction alertAction);
+
+int select_alert_action();
 
 #endif //UNTITLED3_ACTIVITY_DTO_H
