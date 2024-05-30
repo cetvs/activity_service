@@ -55,23 +55,23 @@ build CMakeFiles/untitled3.dir/main.c.o: C_COMPILER__untitled3_unscanned_Debug /
   OBJECT_DIR = CMakeFiles/untitled3.dir
   OBJECT_FILE_DIR = CMakeFiles/untitled3.dir
 
-build CMakeFiles/untitled3.dir/mongoose/mongoose.c.o: C_COMPILER__untitled3_unscanned_Debug /Users/sergey-tolk/CLionProjects/untitled3/mongoose/mongoose.c || cmake_object_order_depends_target_untitled3
-  DEP_FILE = CMakeFiles/untitled3.dir/mongoose/mongoose.c.o.d
+build CMakeFiles/untitled3.dir/third_party/mongoose/mongoose.c.o: C_COMPILER__untitled3_unscanned_Debug /Users/sergey-tolk/CLionProjects/untitled3/third_party/mongoose/mongoose.c || cmake_object_order_depends_target_untitled3
+  DEP_FILE = CMakeFiles/untitled3.dir/third_party/mongoose/mongoose.c.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -fcolor-diagnostics
   OBJECT_DIR = CMakeFiles/untitled3.dir
-  OBJECT_FILE_DIR = CMakeFiles/untitled3.dir/mongoose
+  OBJECT_FILE_DIR = CMakeFiles/untitled3.dir/third_party/mongoose
 
-build CMakeFiles/untitled3.dir/controllers/activity_controller.c.o: C_COMPILER__untitled3_unscanned_Debug /Users/sergey-tolk/CLionProjects/untitled3/controllers/activity_controller.c || cmake_object_order_depends_target_untitled3
-  DEP_FILE = CMakeFiles/untitled3.dir/controllers/activity_controller.c.o.d
+build CMakeFiles/untitled3.dir/EOP/activity/controllers/activity_controller.c.o: C_COMPILER__untitled3_unscanned_Debug /Users/sergey-tolk/CLionProjects/untitled3/EOP/activity/controllers/activity_controller.c || cmake_object_order_depends_target_untitled3
+  DEP_FILE = CMakeFiles/untitled3.dir/EOP/activity/controllers/activity_controller.c.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -fcolor-diagnostics
   OBJECT_DIR = CMakeFiles/untitled3.dir
-  OBJECT_FILE_DIR = CMakeFiles/untitled3.dir/controllers
+  OBJECT_FILE_DIR = CMakeFiles/untitled3.dir/EOP/activity/controllers
 
-build CMakeFiles/untitled3.dir/data/dto/activity_dto.c.o: C_COMPILER__untitled3_unscanned_Debug /Users/sergey-tolk/CLionProjects/untitled3/data/dto/activity_dto.c || cmake_object_order_depends_target_untitled3
-  DEP_FILE = CMakeFiles/untitled3.dir/data/dto/activity_dto.c.o.d
+build CMakeFiles/untitled3.dir/EOP/activity/data/dto/activity_dto.c.o: C_COMPILER__untitled3_unscanned_Debug /Users/sergey-tolk/CLionProjects/untitled3/EOP/activity/data/dto/activity_dto.c || cmake_object_order_depends_target_untitled3
+  DEP_FILE = CMakeFiles/untitled3.dir/EOP/activity/data/dto/activity_dto.c.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -fcolor-diagnostics
   OBJECT_DIR = CMakeFiles/untitled3.dir
-  OBJECT_FILE_DIR = CMakeFiles/untitled3.dir/data/dto
+  OBJECT_FILE_DIR = CMakeFiles/untitled3.dir/EOP/activity/data/dto
 
 
 # =============================================================================
@@ -81,7 +81,7 @@ build CMakeFiles/untitled3.dir/data/dto/activity_dto.c.o: C_COMPILER__untitled3_
 #############################################
 # Link the executable untitled3
 
-build untitled3: C_EXECUTABLE_LINKER__untitled3_Debug CMakeFiles/untitled3.dir/main.c.o CMakeFiles/untitled3.dir/mongoose/mongoose.c.o CMakeFiles/untitled3.dir/controllers/activity_controller.c.o CMakeFiles/untitled3.dir/data/dto/activity_dto.c.o | /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/lib/libsqlite3.tbd
+build untitled3: C_EXECUTABLE_LINKER__untitled3_Debug CMakeFiles/untitled3.dir/main.c.o CMakeFiles/untitled3.dir/third_party/mongoose/mongoose.c.o CMakeFiles/untitled3.dir/EOP/activity/controllers/activity_controller.c.o CMakeFiles/untitled3.dir/EOP/activity/data/dto/activity_dto.c.o | /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/lib/libsqlite3.tbd
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2
   LINK_LIBRARIES = /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/lib/libsqlite3.tbd
   OBJECT_DIR = CMakeFiles/untitled3.dir

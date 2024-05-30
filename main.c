@@ -1,9 +1,6 @@
-#include <stdio.h>
-#include <sqlite3.h>
-
-#include "mongoose/mongoose.h"
-#include "controllers/activity_controller.h"
-#include "data/dto/activity_dto.h"
+#include "EOP/activity/data/dto/activity_dto.h"
+#include "third_party/mongoose/mongoose.h"
+#include "EOP/activity/controllers/activity_controller.h"
 
 int main(void) {
 //    drop_activity_info_table();

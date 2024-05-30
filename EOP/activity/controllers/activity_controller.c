@@ -2,7 +2,7 @@
 // Created by Sergei Tolkachev on 22.05.2024.
 //
 
-#include "../mongoose/mongoose.h"
+#include "../../../third_party/mongoose/mongoose.h"
 #include "../data/activity_info.h"
 
 void activity_cotroller_post_activity_info(struct mg_connection *c, int ev, void *ev_data) {

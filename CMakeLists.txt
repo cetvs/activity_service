@@ -7,14 +7,14 @@ find_package(SQLite3 REQUIRED)
 
 add_executable(
         untitled3 main.c
-        mongoose/mongoose.c
-        mongoose/mongoose.h
-        controllers/activity_controller.h
-        data/activity_info.h
-        controllers/activity_controller.c
-        data/dto/activity_dto.h
-        data/dto/activity_dto.c
-        data/dto/AlertAction.h
+        third_party/mongoose/mongoose.c
+        third_party/mongoose/mongoose.h
+        EOP/activity/controllers/activity_controller.h
+        EOP/activity/data/activity_info.h
+        EOP/activity/controllers/activity_controller.c
+        EOP/activity/data/dto/activity_dto.h
+        EOP/activity/data/dto/activity_dto.c
+        EOP/activity/data/dto/AlertAction.h
 )
 
 include_directories(${SQLite3_INCLUDE_DIR})
