@@ -46,7 +46,7 @@ int create_activity_info_table() {
                                 "userId Text,"
                                 "actionAlertId INTEGER,"
                                 "actionErrorId INTEGER,"
-                                "description: TEXT,"
+                                "description TEXT,"
                                 "time TEXT"
                                 ")";
     create_table_request(historyRecord);
@@ -61,7 +61,7 @@ int create_activity_info_table() {
     const char *actionType = "CREATE TABLE IF NOT EXISTS ErrorAction ("
                              "id INTEGER PRIMARY KEY,"
                              "name TEXT,"
-                             "description TEXT"
+                             "description TEXT,"
                              "criticalLevel INT"
                              ")";
     create_table_request(actionType);
