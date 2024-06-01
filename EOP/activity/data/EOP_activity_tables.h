@@ -5,16 +5,17 @@
 #ifndef UNTITLED3_EOP_ACTIVITY_TABLES_H
 #define UNTITLED3_EOP_ACTIVITY_TABLES_H
 
-char *EOP_Activity_History_Record_Table_create = "CREATE TABLE IF NOT EXISTS HistoryRecord ("
+char *EOP_activity_history_record_table_create = "CREATE TABLE IF NOT EXISTS HistoryRecord ("
                                                  "id INTEGER PRIMARY KEY,"
-                                                 "userId Text,"
-                                                 "actionAlertId INTEGER,"
-                                                 "actionErrorId INTEGER,"
+                                                 "userId INTEGER,"
+                                                 "alertActionId INTEGER,"
+                                                 "errorActionId INTEGER,"
                                                  "description TEXT,"
-                                                 "time TEXT"
+                                                 "timestamp INTEGER"
                                                  ")";
 
-const char *EOP_activity_alert_activity_Table_create = "CREATE TABLE IF NOT EXISTS AlertAction ("
+
+const char *EOP_activity_alert_action_table_create = "CREATE TABLE IF NOT EXISTS AlertAction ("
                      "id INTEGER PRIMARY KEY,"
                      "name TEXT,"
                      "description TEXT"

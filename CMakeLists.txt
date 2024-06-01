@@ -15,6 +15,11 @@ add_executable(
         EOP/activity/data/dao/EOP_activity_dao.c
         EOP/activity/data/model/EOP_action_alert.h
         EOP/activity/data/EOP_activity_tables.h
+        EOP/activity/service/EOP_activity_service.h
+        EOP/activity/service/EOP_activity_service.c
+        EOP/activity/data/mapper/EOP_activity_mapper.h
+        EOP/activity/data/mapper/EOP_activity_mapper.c
+        EOP/activity/data/model/EOP_activity_err_code.h
 )
 
 include_directories(${SQLite3_INCLUDE_DIR})

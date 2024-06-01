@@ -7,11 +7,11 @@
 
 typedef struct EOP_history_record {
     int id;
-    int userId;
-    int actionAlertId;
-    int errorAlertId;
-    int description;
-    int timestamp;
+    long userId;
+    int alertActionId;
+    int errorActionId;
+    char *description;
+    long timestamp;
 } EOP_history_record;
 
 #endif //UNTITLED3_ACTION_H
