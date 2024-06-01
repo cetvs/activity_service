@@ -14,7 +14,7 @@ add_executable(
         EOP/activity/data/dao/EOP_activity_dao.h
         EOP/activity/data/dao/EOP_activity_dao.c
         EOP/activity/data/model/EOP_action_alert.h
-        EOP/activity/data/EOP_activity_tables.h
+        EOP/activity/data/EOP_activity_sql.h
         EOP/activity/service/EOP_activity_service.h
         EOP/activity/service/EOP_activity_service.c
         EOP/activity/data/mapper/EOP_activity_mapper.h

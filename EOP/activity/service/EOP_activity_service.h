@@ -10,4 +10,8 @@
 
 int EOP_activity_service_save(EOP_history_record history_record);
 
+char *EOP_activity_service_get_history_record_list();
+
+int EOP_activity_service_history_record_count();
+
 #endif //UNTITLED3_EOP_ACTIVITY_CONTROLLER_H

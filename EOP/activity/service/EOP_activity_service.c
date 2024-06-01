@@ -10,7 +10,23 @@
 
 static int EOP_activity_validate_user_id(long user_id) {
     if (user_id < 1) {
-        printf("incorrect student_id");
+        printf("incorrect user_id");
+        return 1;
+    }
+    return 0;
+}
+
+static int EOP_activity_validate_alertActionId(long alertActionId) {
+    if (alertActionId < 1) {
+        printf("incorrect alertActionId");
+        return 1;
+    }
+    return 0;
+}
+
+static int EOP_activity_validate_errorActionId(long errorActionId) {
+    if (errorActionId < 1) {
+        printf("incorrect errorActionId");
         return 1;
     }
     return 0;
@@ -26,7 +42,7 @@ static int EOP_activity_validate_description(char *description) {
 
 static int EOP_activity_validate_timestamp(long timestamp) {
     if (timestamp < 0) {
-        printf("very long description");
+        printf("incorrect timestamp");
         return 1;
     }
     return 0;
@@ -39,13 +55,16 @@ static int EOP_activity_validate_history_record(EOP_history_record history_recor
     return 0;
 }
 
-int EOP_activity_service_get_all_activity() {
-    printf("Visit count calculated\n");
+char *EOP_activity_service_get_history_record_list() {
+    return EOP_activity_dao_get_history_record_list();
+}
+
+int EOP_activity_service_history_record_count() {
+    return EOP_activity_dao_history_record_count();
 }
 
 int EOP_activity_service_save(EOP_history_record history_record) {
     if (EOP_activity_validate_history_record(history_record) == 1) return 1;
     int result = EOP_activity_dao_save_history_record(history_record);
-    printf("description: %s", history_record.description);
     return result;
 }

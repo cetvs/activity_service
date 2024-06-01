@@ -4,9 +4,11 @@
 
 #include <sqlite3.h>
 #include <stdio.h>
+#include <string.h>
 #include "../model/EOP_action_alert.h"
-#include "../EOP_activity_tables.h"
+#include "../EOP_activity_sql.h"
 #include "../model/EOP_history_record.h"
+#include "../mapper/EOP_activity_mapper.h"
 
 void add_to_insert_history_record_userId(sqlite3_stmt *stmt, EOP_history_record history_record) {
     sqlite3_bind_int(stmt, 1, history_record.userId); // userId
@@ -84,7 +86,7 @@ int drop_table(char *tableName) {
     char sql_request[200];
     snprintf(sql_request,
              sizeof(sql_request),
-             "DROP TABLE IF EXISTS %s",
+             EOP_activity_drop_table_by_name,
              tableName
     );
 
@@ -180,26 +182,19 @@ int insert_alert_action(EOP_action_alert alertAction) {
     return 0;
 }
 
-int select_table_row_count() {
+int EOP_activity_dao_history_record_count() {
     sqlite3 *db;
-    char *err;
     sqlite3_stmt *stmt;
     int count = 0;
 
-    // Открыть базу данных
-    if (sqlite3_open("activity_v1.db", &db) != SQLITE_OK) {
-        fprintf(stderr, "Ошибка открытия базы данных: %s\n", sqlite3_errmsg(db));
-        sqlite3_close(db);
-        return 1;
-    }
+    open_database(&db);
 
     // Подготовить запрос
-    const char *sql = "SELECT COUNT(*) FROM HistoryRecord";
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+    if (sqlite3_prepare_v2(db, EOP_activity_count_history_record, -1, &stmt, NULL) != SQLITE_OK) {
         fprintf(stderr, "Ошибка подготовки запроса: %s\n", sqlite3_errmsg(db));
         sqlite3_finalize(stmt);
         sqlite3_close(db);
-        return 1;
+        return -1;
     }
 
     // Выполнить запрос
@@ -213,10 +208,7 @@ int select_table_row_count() {
     // Закрыть базу данных
     sqlite3_close(db);
 
-    // Вывести результат
-    printf("Количество строк в таблице History: %d\n", count);
-
-    return 0;
+    return count;
 }
 
 int select_history_record() {
@@ -257,6 +249,55 @@ int select_history_record() {
     return 0;
 }
 
+char *EOP_activity_dao_get_history_record_list() {
+    sqlite3 *db;
+    char *err;
+    sqlite3_stmt *stmt;
+
+    open_database(&db);
+
+    // Подготовить запрос SELECT
+    if (sqlite3_prepare_v2(db, EOP_activity_history_record_select_all, -1, &stmt, NULL) != SQLITE_OK) {
+        fprintf(stderr, "Ошибка подготовки запроса: %s\n", sqlite3_errmsg(db));
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+        return "";
+    }
+
+    char *response = "[\n";
+
+    int rc = sqlite3_step(stmt);
+    // Выполнить запрос и обработать результат
+    while (rc) {
+        EOP_history_record history_record;
+        // Извлечь данные из каждого столбца
+        history_record.id = sqlite3_column_int(stmt, 0);
+        history_record.userId = sqlite3_column_int(stmt, 1);
+        history_record.alertActionId = sqlite3_column_int(stmt, 2);
+        history_record.errorActionId = sqlite3_column_int(stmt, 3);
+        history_record.description = ( char *) sqlite3_column_text(stmt, 4);
+        history_record.timestamp = sqlite3_column_int(stmt, 5);
+
+        // Вывести полученные данные
+        printf("id: %s\n", history_record.description);
+        rc = sqlite3_step(stmt);
+        strcat(response, EOP_history_record_to_json(history_record));
+        if (rc == SQLITE_ROW) {
+            strcat(response, ",\n");
+        }
+    }
+    strcat(response, "\n]");
+
+    // Очистить запрос
+    sqlite3_finalize(stmt);
+
+    // Закрыть базу данных
+    sqlite3_close(db);
+    printf(response);
+
+    return response;
+}
+
 int EOP_activity_dao_save_history_record(EOP_history_record history_record) {
     sqlite3 *db;
     sqlite3_stmt *stmt;
@@ -264,8 +305,7 @@ int EOP_activity_dao_save_history_record(EOP_history_record history_record) {
     open_database(&db);
 
     // Подготовить запрос на вставку
-    const char *sql = "INSERT INTO HistoryRecord (userId, alertActionId, errorActionId, description, timestamp) VALUES (?, ?, ?, ?, ?)";
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+    if (sqlite3_prepare_v2(db, EOP_activity_insert_history_record, -1, &stmt, NULL) != SQLITE_OK) {
         fprintf(stderr, "Ошибка подготовки запроса: %s\n", sqlite3_errmsg(db));
         sqlite3_finalize(stmt);
         sqlite3_close(db);

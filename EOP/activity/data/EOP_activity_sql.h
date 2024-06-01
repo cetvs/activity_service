@@ -2,8 +2,8 @@
 // Created by Sergei Tolkachev on 30.05.2024.
 //
 
-#ifndef UNTITLED3_EOP_ACTIVITY_TABLES_H
-#define UNTITLED3_EOP_ACTIVITY_TABLES_H
+#ifndef UNTITLED3_EOP_ACTIVITY_SQL_H
+#define UNTITLED3_EOP_ACTIVITY_SQL_H
 
 char *EOP_activity_history_record_table_create = "CREATE TABLE IF NOT EXISTS HistoryRecord ("
                                                  "id INTEGER PRIMARY KEY,"
@@ -13,7 +13,6 @@ char *EOP_activity_history_record_table_create = "CREATE TABLE IF NOT EXISTS His
                                                  "description TEXT,"
                                                  "timestamp INTEGER"
                                                  ")";
-
 
 const char *EOP_activity_alert_action_table_create = "CREATE TABLE IF NOT EXISTS AlertAction ("
                      "id INTEGER PRIMARY KEY,"
@@ -27,4 +26,13 @@ const char *EOP_activity_error_action_table_create = "CREATE TABLE IF NOT EXISTS
                          "description TEXT,"
                          "criticalLevel INT"
                          ")";
-#endif //UNTITLED3_EOP_ACTIVITY_TABLES_H
+
+
+const char *EOP_activity_insert_history_record = "INSERT INTO HistoryRecord (userId, alertActionId, errorActionId, description, timestamp) VALUES (?, ?, ?, ?, ?)";
+
+const char *EOP_activity_history_record_select_all = "SELECT * FROM HistoryRecord";
+
+const char *EOP_activity_count_history_record = "SELECT COUNT(*) FROM HistoryRecord";
+
+const char *EOP_activity_drop_table_by_name = "DROP TABLE IF EXISTS %s";
+#endif //UNTITLED3_EOP_ACTIVITY_SQL_H

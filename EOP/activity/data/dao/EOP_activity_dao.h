@@ -21,7 +21,9 @@ int insert_alert_action(EOP_action_alert alertAction);
 
 int select_history_record();
 
-int select_table_row_count();
+char *EOP_activity_dao_get_history_record_list();
+
+int EOP_activity_dao_history_record_count();
 
 int EOP_activity_dao_save_history_record(EOP_history_record history_record);
 

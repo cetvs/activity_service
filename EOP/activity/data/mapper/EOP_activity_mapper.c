@@ -20,10 +20,30 @@ static long EOP_activity_timestamp(struct mg_str json) {
 EOP_history_record EOP_activity_mapper_to_history_record(struct mg_str json) {
     EOP_history_record history_record;
     history_record.userId = EOP_activity_userId(json);
-    printf("userId = %ld\n", history_record.userId );
+    printf("userId = %ld\n", history_record.userId);
     history_record.description = EOP_activity_description(json);
-    printf("description = %s\n", history_record.description );
+    printf("description = %s\n", history_record.description);
     history_record.timestamp = EOP_activity_timestamp(json);
-    printf("timestamp = %ld\n", history_record.timestamp );
+    printf("timestamp = %ld\n", history_record.timestamp);
     return history_record;
+}
+
+char *EOP_history_record_to_json(EOP_history_record historyRecord) {
+    char buf[512];
+    snprintf(buf,512, "{\n"
+                "   \"id\": %d,\n"
+                "   \"userId\": %ld,\n"
+                "   \"alertActionId\": %d, \n"
+                "   \"errorActionId\": %d,\n"
+                "   \"description\": %s,\n"
+                "   \"timestamp\": \"%ld\"\n"
+                "}",
+           historyRecord.id,
+           historyRecord.userId,
+           historyRecord.alertActionId,
+           historyRecord.errorActionId,
+           historyRecord.description,
+           historyRecord.timestamp
+    );
+    return buf;
 }

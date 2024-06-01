@@ -6,6 +6,14 @@
 #include "../service/EOP_activity_service.h"
 #include "../data/mapper/EOP_activity_mapper.h"
 
+static bool EOP_activity_validate_history_record_list(char *response_list) {
+    return response_list != "";
+}
+
+static bool EOP_activity_validate_history_record_count(int count) {
+    return count > -1;
+}
+
 static bool EOP_activity_is_post(struct mg_str method) {
     return strncmp("POST", method.buf, strlen("POST")) == 0;
 }
@@ -22,6 +30,25 @@ static void EOP_activity_success_201_replay(struct mg_connection *pConnection) {
     mg_http_reply(pConnection, 201, "", "Success");
 }
 
+static void EOP_activity_history_row_count(struct mg_connection *pConnection) {
+    int count = EOP_activity_service_history_record_count();
+    if (EOP_activity_validate_history_record_count(count)) {
+        char response_count[20]; // Достаточно места для числа и нулевого символа
+        sprintf(response_count, "%d", count);
+        mg_http_reply(pConnection, 200, "Content-Type: application/json\r\n", response_count);
+    } else {
+        EOP_activity_error_replay(pConnection);
+        printf("EOP_activity_history_row_count error\n");
+    }
+}
+
+static void EOP_activity_get_history_record_list(struct mg_connection *pConnection) {
+    char *response = EOP_activity_service_get_history_record_list();
+    if (EOP_activity_validate_history_record_list(response)) {
+        mg_http_reply(pConnection, 200, "Content-Type: application/json\r\n", response);
+    }
+}
+
 static void EOP_activity_handle_create_one(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
     if (EOP_activity_service_save(EOP_activity_mapper_to_history_record(pMessage->body)) == 0) {
         printf("EOP_activity_service_save");
@@ -31,10 +58,6 @@ static void EOP_activity_handle_create_one(struct mg_connection *pConnection, st
     }
 }
 
-static void EOP_activity_handle_create_all_activity(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
-
-}
-
 void EOP_activity_handle_activity(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
     // POST create row
     if (mg_match(pMessage->uri, mg_str("/api/activity/one"), NULL) && EOP_activity_is_post(pMessage->method)) {
@@ -42,9 +65,17 @@ void EOP_activity_handle_activity(struct mg_connection *pConnection, struct mg_h
         return;
     }
 
-    // GET all activity
-    if (mg_match(pMessage->uri, mg_str("/api/activity/all"), NULL) && EOP_activity_is_get(pMessage->method)) {
-        EOP_activity_handle_create_all_activity(pConnection, pMessage);
+    // GET history_record count
+    if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_count"), NULL) &&
+        EOP_activity_is_get(pMessage->method)) {
+        EOP_activity_history_row_count(pConnection);
+        return;
+    }
+
+    // GET history_record list
+    if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_list"), NULL) &&
+        EOP_activity_is_get(pMessage->method)) {
+        EOP_activity_get_history_record_list(pConnection);
         return;
     }
 }
@@ -65,22 +96,3 @@ void handle_controller(struct mg_connection *c, int ev, void *ev_data) {
         http_matcher(c, hm);
     }
 }
-
-//void test(struct mg_connection *c, int ev, void *ev_data) {
-//    if (ev == MG_EV_HTTP_MSG) {
-//        struct mg_http_message *hm = (struct mg_http_message *) ev_data;
-//        bool is_match = mg_match(hm->uri, mg_str("/api/sum"), NULL);
-//        if (is_match) {
-//            char *str = mg_json_get_str(hm->body, "$[0]");  // Extract first
-//            activity_info data = {str};
-//            printf("value of a_static: %s\n", data.name);
-//            mg_http_reply(
-//                    c,
-//                    200,
-//                    "Content-Type: application/json\r\n",
-//                    "{%m:%g}\n", MG_ESC("result"),
-//                    str
-//            );
-//        }
-//    }
-//}
