@@ -86,7 +86,7 @@ static void EOP_activity_handle_update(struct mg_connection *pConnection, struct
     }
 }
 
-void EOP_activity_handle_activity(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
+static void EOP_activity_handle_activity(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
     // POST create row
     if (mg_match(pMessage->uri, mg_str("/api/activity/one"), NULL) && EOP_activity_is_post(pMessage->method)) {
         EOP_activity_handle_create_one(pConnection, pMessage);
@@ -121,7 +121,7 @@ void EOP_activity_handle_activity(struct mg_connection *pConnection, struct mg_h
     }
 }
 
-void http_matcher(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
+static void http_matcher(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
     if (mg_match(pMessage->uri, mg_str("/api/activity#"), NULL)) {
         EOP_activity_handle_activity(pConnection, pMessage);
     } else {
@@ -130,9 +130,9 @@ void http_matcher(struct mg_connection *pConnection, struct mg_http_message *pMe
     }
 }
 
-void handle_controller(struct mg_connection *c, int ev, void *ev_data) {
+void EOP_activity_handle_controller(struct mg_connection *c, int ev, void *ev_data) {
     if (ev == MG_EV_HTTP_MSG) {  // New HTTP request received
-        printf("handle_controller\n");
+        printf("EOP_activity_handle_controller\n");
         struct mg_http_message *hm = (struct mg_http_message *) ev_data;// Parsed HTTP request
         http_matcher(c, hm);
     }

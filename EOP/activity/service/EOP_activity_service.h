@@ -19,6 +19,6 @@ int EOP_activity_service_update_history_record(EOP_history_record history_record
 
 int EOP_activity_service_history_record_count();
 
-int EOP_activity_service_init_dp();
+int EOP_activity_service_init_db();
 
 #endif //UNTITLED3_EOP_ACTIVITY_SERVICE_H

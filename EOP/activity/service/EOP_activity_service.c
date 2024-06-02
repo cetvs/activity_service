@@ -77,7 +77,7 @@ int EOP_activity_service_delete_history_record(EOP_activity_delete_request reque
     return result;
 }
 
-int EOP_activity_service_init_dp() {
+int EOP_activity_service_init_db() {
     EOP_activity_create_activity_info_table();
 }
 

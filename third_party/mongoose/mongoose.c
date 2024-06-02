@@ -761,7 +761,7 @@ MG_DEBUG(("Resetting device..."));
 
 #if MG_DEVICE == MG_DEVICE_STM32H5
 
-#define FLASH_BASE 0x40022000          // Base address of the flash handle_controller
+#define FLASH_BASE 0x40022000          // Base address of the flash EOP_activity_handle_controller
 #define FLASH_KEYR (FLASH_BASE + 0x4)  // See RM0481 7.11
 #define FLASH_OPTKEYR (FLASH_BASE + 0xc)
 #define FLASH_OPTCR (FLASH_BASE + 0x1c)
@@ -16172,7 +16172,7 @@ s_rxdesc[i][1] = 0;                          // Clear status
 s_rxdesc[ETH_DESC_CNT - 1][0] |= MG_BIT(1);  // Last rx descriptor - wrap
 
 GMAC_REGS->GMAC_TBQB = (uint32_t) s_txdesc;  // about the descriptor addresses
-GMAC_REGS->GMAC_RBQB = (uint32_t) s_rxdesc;  // Let the handle_controller know
+GMAC_REGS->GMAC_RBQB = (uint32_t) s_rxdesc;  // Let the EOP_activity_handle_controller know
 
 GMAC_REGS->SA[0].GMAC_SAB =
 MG_U32(ifp->mac[3], ifp->mac[2], ifp->mac[1], ifp->mac[0]);
@@ -17467,7 +17467,7 @@ struct mg_tcpip_driver_xmc7_data *d =
 (struct mg_tcpip_driver_xmc7_data *) ifp->driver_data;
 s_ifp = ifp;
 
-// enable handle_controller, set RGMII mode
+// enable EOP_activity_handle_controller, set RGMII mode
 ETH0->CTL = MG_BIT(31) | 2;
 
 uint32_t cr = get_clock_rate(d);

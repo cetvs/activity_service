@@ -7,6 +7,6 @@
 
 #include <stdio.h>
 
-void handle_controller(struct mg_connection *c, int ev, void *ev_data);
+void EOP_activity_handle_controller(struct mg_connection *c, int ev, void *ev_data);
 
 #endif //UNTITLED3_EOP_ACTIVITY_CONTROLLER_H
