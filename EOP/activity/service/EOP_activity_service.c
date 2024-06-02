@@ -96,6 +96,11 @@ int EOP_activity_service_save(EOP_history_record history_record) {
 }
 
 int EOP_activity_service_update_history_record(EOP_history_record history_record) {
-    if (EOP_activity_insert_validate_history_record(history_record) == 1) return 1;
+    if (EOP_activity_update_validate_history_record(history_record) == 1) return 1;
     int result = EOP_activity_dao_update_history_record(history_record);
+    return result;
+}
+
+char *EOP_activity_service_sort_by_error_level() {
+    return EOP_activity_dao_sort_by_error_level();
 }

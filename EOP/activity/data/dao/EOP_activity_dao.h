@@ -30,4 +30,6 @@ int EOP_activity_dao_delete_history_record(long id);
 
 int EOP_activity_dao_update_history_record(EOP_history_record history_record);
 
+char *EOP_activity_dao_sort_by_error_level();
+
 #endif //UNTITLED3_EOP_ACTIVITY_DAO_H

@@ -262,11 +262,8 @@ char *EOP_activity_dao_get_history_record_list() {
 
     EOP_activity_open_database(&db);
 
-    // Подготовка SQL-запроса
-    const char *sql = "SELECT * FROM HistoryRecord";
-
     // Выполнение запроса
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, &err)) {
+    if (sqlite3_prepare_v2(db, EOP_activity_history_record_select_all, -1, &stmt, &err)) {
         fprintf(stderr, "Ошибка подготовки запроса: %s\n", err);
         sqlite3_free(err);
         sqlite3_close(db);
@@ -402,4 +399,53 @@ int EOP_activity_dao_update_history_record(EOP_history_record history_record) {
 
     printf("Данные успешно изменены\n");
     return 0;
+}
+
+char *EOP_activity_dao_sort_by_error_level() {
+    printf("EOP_activity_dao_sort_by_error_level\n");
+    sqlite3 *db;
+    char *err;
+    sqlite3_stmt *stmt;
+
+    EOP_activity_open_database(&db);
+
+    // Подготовка SQL-запроса
+
+    // Выполнение запроса
+    if (sqlite3_prepare_v2(db, EOP_activity_sort_by_isErrorLevel_history_record, -1, &stmt, &err)) {
+        fprintf(stderr, "Ошибка подготовки запроса: %s\n", err);
+        sqlite3_free(err);
+        sqlite3_close(db);
+        return "";
+    }
+
+    char *json = malloc(1024); // Выделяем память для JSON-строки
+    if (json == NULL) {
+        fprintf(stderr, "Ошибка выделения памяти\n");
+        return NULL;
+    }
+
+    sprintf(json, "[\n");
+    // Вывод результатов
+    int rc = sqlite3_step(stmt);
+    while (rc == SQLITE_ROW) {
+        EOP_history_record history_record;
+
+        // Вставить данные
+        add_to_update_history_record(stmt, history_record);
+
+        strcat(json, EOP_history_record_to_json(history_record));
+
+        rc = sqlite3_step(stmt);
+        if (rc == SQLITE_ROW) {
+            strcat(json, ",\n");
+        }
+    }
+    strcat(json, "\n]");
+
+    // Освобождение ресурсов
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return json;
 }

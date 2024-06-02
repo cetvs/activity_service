@@ -6,6 +6,10 @@
 #include "../service/EOP_activity_service.h"
 #include "../data/mapper/EOP_activity_mapper.h"
 
+static bool EOP_activity_validate_sort_by_error_level(char *response_list) {
+    return response_list != "";
+}
+
 static bool EOP_activity_validate_history_record_list(char *response_list) {
     return response_list != "";
 }
@@ -54,10 +58,23 @@ static void EOP_activity_history_row_count(struct mg_connection *pConnection) {
     }
 }
 
+static void EOP_activity_sort_by_error_level(struct mg_connection *pConnection) {
+    char *response = EOP_activity_service_sort_by_error_level();
+    if (EOP_activity_validate_sort_by_error_level(response)){
+        mg_http_reply(pConnection, 200, "Content-Type: application/json\r\n", response);
+    } else {
+        EOP_activity_error_replay(pConnection);
+        printf("EOP_activity_sort_by_error_level error\n");
+    }
+}
+
 static void EOP_activity_get_history_record_list(struct mg_connection *pConnection) {
     char *response = EOP_activity_service_get_history_record_list();
     if (EOP_activity_validate_history_record_list(response)) {
         mg_http_reply(pConnection, 200, "Content-Type: application/json\r\n", response);
+    } else {
+        EOP_activity_error_replay(pConnection);
+        printf("EOP_activity_get_history_record_list error\n");
     }
 }
 
@@ -67,6 +84,7 @@ static void EOP_activity_handle_create_one(struct mg_connection *pConnection, st
         EOP_activity_success_201_replay(pConnection);
     } else {
         EOP_activity_error_replay(pConnection);
+        printf("EOP_activity_handle_create_one error\n");
     }
 }
 
@@ -75,6 +93,7 @@ static void EOP_activity_handle_delete_history_record(struct mg_connection *pCon
         EOP_activity_success_200_replay(pConnection);
     } else {
         EOP_activity_error_replay(pConnection);
+        printf("EOP_activity_handle_delete_history_record error\n");
     }
 }
 
@@ -83,6 +102,7 @@ static void EOP_activity_handle_update(struct mg_connection *pConnection, struct
         EOP_activity_success_200_replay(pConnection);
     } else {
         EOP_activity_error_replay(pConnection);
+        printf("EOP_activity_handle_update error\n");
     }
 }
 
@@ -104,6 +124,13 @@ static void EOP_activity_handle_activity(struct mg_connection *pConnection, stru
     if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_list"), NULL) &&
         EOP_activity_is_get(pMessage->method)) {
         EOP_activity_get_history_record_list(pConnection);
+        return;
+    }
+
+    // GET sort by critical level
+    if (mg_match(pMessage->uri, mg_str("/api/activity/sort_by_error_level"), NULL) &&
+        EOP_activity_is_get(pMessage->method)) {
+        EOP_activity_sort_by_error_level(pConnection);
         return;
     }
 

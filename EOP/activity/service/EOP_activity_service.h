@@ -21,4 +21,6 @@ int EOP_activity_service_history_record_count();
 
 int EOP_activity_service_init_db();
 
+char *EOP_activity_service_sort_by_error_level();
+
 #endif //UNTITLED3_EOP_ACTIVITY_SERVICE_H

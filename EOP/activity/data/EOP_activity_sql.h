@@ -40,4 +40,5 @@ const char *EOP_activity_drop_table_by_name = "DROP TABLE IF EXISTS %s";
 const char *EOP_activity_delete_history_record = "DELETE FROM HistoryRecord WHERE id = ?";
 
 const char *EOP_activity_update_history_record = "UPDATE HistoryRecord SET userId = ?, isErrorLevel = ?, description = ?, timestamp = ? WHERE id = ?";
+const char *EOP_activity_sort_by_isErrorLevel_history_record ="SELECT * FROM HistoryRecord ORDER BY isErrorLevel DESC;";
 #endif //UNTITLED3_EOP_ACTIVITY_SQL_H
