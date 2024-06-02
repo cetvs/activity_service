@@ -224,7 +224,7 @@ int EOP_activity_dao_history_record_count() {
     return count;
 }
 
-int EOP_activity_select_history_record() {
+int EOP_activity_dao_select_history_record() {
     sqlite3 *db;
 
     // 1. Открыть базу данных
@@ -236,7 +236,7 @@ int EOP_activity_select_history_record() {
 
     // 2. Подготовить запрос
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, &err) != SQLITE_OK) {
-        fprintf(stderr, "Ошибка подготовки запроса EOP_activity_select_history_record: %s\n", err);
+        fprintf(stderr, "Ошибка подготовки запроса EOP_activity_dao_select_history_record: %s\n", err);
         sqlite3_free(err);
         sqlite3_close(db);
         return 1;
@@ -453,7 +453,11 @@ char *EOP_activity_dao_sort_by_error_level() {
         printf("-----\n");
 
         // Вставить данные
-        add_to_update_history_record(stmt, history_record);
+        history_record.id = sqlite3_column_int(stmt, 0);
+        history_record.userId = sqlite3_column_int(stmt, 1);
+        history_record.isErrorLevel = sqlite3_column_int(stmt, 2);
+        history_record.description = (char *) sqlite3_column_text(stmt, 3);
+        history_record.timestamp = sqlite3_column_int(stmt, 4);
 
         strcat(json, EOP_history_record_to_json(history_record));
 
@@ -480,7 +484,6 @@ char *EOP_dao_get_history_record_by_userId(long userId) {
 
     // Подготовка SQL-запроса
     const char *EOP_activity_sort_by_userId_history_record = "SELECT * FROM HistoryRecord WHERE userId = ?";
-
     sqlite3_bind_int(stmt, 1, userId);
 
     // Выполнение запроса
@@ -501,7 +504,6 @@ char *EOP_dao_get_history_record_by_userId(long userId) {
     // Вывод результатов
     int rc = sqlite3_step(stmt);
     while (rc == SQLITE_ROW) {
-        EOP_history_record history_record;
         printf("id: %lld\n", sqlite3_column_int64(stmt, 0));
         printf("userId: %lld\n", sqlite3_column_int64(stmt, 1));
         printf("isErrorLevel: %lld\n", sqlite3_column_int64(stmt, 2));
@@ -509,8 +511,13 @@ char *EOP_dao_get_history_record_by_userId(long userId) {
         printf("timestamp: %lld\n", sqlite3_column_int64(stmt, 4));
         printf("-----\n");
 
+        EOP_history_record history_record;
         // Вставить данные
-        add_to_update_history_record(stmt, history_record);
+        history_record.id = sqlite3_column_int(stmt, 0);
+        history_record.userId = sqlite3_column_int(stmt, 1);
+        history_record.isErrorLevel = sqlite3_column_int(stmt, 2);
+        history_record.description = (char *) sqlite3_column_text(stmt, 3);
+        history_record.timestamp = sqlite3_column_int(stmt, 4);
 
         strcat(json, EOP_history_record_to_json(history_record));
 

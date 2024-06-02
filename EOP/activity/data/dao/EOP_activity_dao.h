@@ -18,7 +18,7 @@ int EOP_activity_drop_table(char *tableName);
 
 int EOP_activity_insert_alert_action(EOP_action_alert alertAction);
 
-int EOP_activity_select_history_record();
+int EOP_activity_dao_select_history_record();
 
 char *EOP_activity_dao_get_history_record_list();
 
