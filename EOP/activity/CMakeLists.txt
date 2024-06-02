@@ -6,7 +6,6 @@ add_library(
         data/dao/EOP_activity_dao.h
         data/dao/EOP_activity_dao.c
         data/model/EOP_action_alert.h
-        data/EOP_activity_sql.h
         service/EOP_activity_service.h
         service/EOP_activity_service.c
         data/mapper/EOP_activity_mapper.h

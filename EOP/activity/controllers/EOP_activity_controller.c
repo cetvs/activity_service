@@ -63,7 +63,7 @@ static void EOP_activity_history_row_count(struct mg_connection *pConnection) {
 
 static void EOP_activity_sort_by_error_level(struct mg_connection *pConnection) {
     char *response = EOP_activity_service_sort_by_error_level();
-    if (EOP_activity_validate_sort_by_error_level(response)){
+    if (EOP_activity_validate_sort_by_error_level(response)) {
         mg_http_reply(pConnection, 200, "Content-Type: application/json\r\n", response);
     } else {
         EOP_activity_error_replay(pConnection);
@@ -78,6 +78,16 @@ static void EOP_activity_get_history_record_list(struct mg_connection *pConnecti
     } else {
         EOP_activity_error_replay(pConnection);
         printf("EOP_activity_get_history_record_list error\n");
+    }
+}
+
+static void EOP_activity_get_history_record_by_userId(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
+    char *response = EOP_activity_service_get_history_record_by_userId(EOP_activity_mapper_userId(pMessage->body));
+    if (EOP_activity_validate_history_record_list(response)) {
+        mg_http_reply(pConnection, 200, "Content-Type: application/json\r\n", response);
+    } else {
+        EOP_activity_error_replay(pConnection);
+        printf("EOP_activity_get_history_record_by_userId error\n");
     }
 }
 
@@ -130,6 +140,13 @@ static void EOP_activity_handle_activity(struct mg_connection *pConnection, stru
         return;
     }
 
+    // GET history_record by userId
+    if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_by_user_id"), NULL) &&
+        EOP_activity_is_get(pMessage->method)) {
+        EOP_activity_get_history_record_by_userId(pConnection, pMessage);
+        return;
+    }
+
     // GET sort by critical level
     if (mg_match(pMessage->uri, mg_str("/api/activity/sort_by_error_level"), NULL) &&
         EOP_activity_is_get(pMessage->method)) {
@@ -138,14 +155,15 @@ static void EOP_activity_handle_activity(struct mg_connection *pConnection, stru
     }
 
     // DELETE delete history_record
-    if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_delete"), NULL) && EOP_activity_is_delete(pMessage->method)) {
+    if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_delete"), NULL) &&
+        EOP_activity_is_delete(pMessage->method)) {
         EOP_activity_handle_delete_history_record(pConnection, pMessage);
         return;
     }
 
     // PUT update history_record
     if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_update"), NULL) &&
-            EOP_activity_is_put(pMessage->method)) {
+        EOP_activity_is_put(pMessage->method)) {
         EOP_activity_handle_update(pConnection, pMessage);
         return;
     }
@@ -168,9 +186,11 @@ static void EOP_activity_handle_controller(struct mg_connection *c, int ev, void
     }
 }
 
-int EOP_activity_controller_start() {
-    EOP_activity_service_init_db();
+int EOP_activity_init_db() {
+    return EOP_activity_service_init_db();
+}
 
+int EOP_activity_http_controller_start() {
     setbuf(stdout, 0);
     struct mg_mgr mgr;  // Mongoose event manager. Holds all connections
     mg_mgr_init(&mgr);  // Initialise event manager

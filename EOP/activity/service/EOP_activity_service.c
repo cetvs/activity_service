@@ -85,6 +85,11 @@ char *EOP_activity_service_get_history_record_list() {
     return EOP_activity_dao_get_history_record_list();
 }
 
+char *EOP_activity_service_get_history_record_by_userId(int userId) {
+    printf("userId =%d\n", userId);
+    return EOP_dao_get_history_record_by_userId(userId);
+}
+
 int EOP_activity_service_history_record_count() {
     return EOP_activity_dao_history_record_count();
 }

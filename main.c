@@ -1,1 +1,1 @@
-#include <EOP/activity/controllers/EOP_activity_controller.h>int main(void) {    EOP_activity_controller_start();}
+#include <EOP/activity/controllers/EOP_activity_controller.h>#include "EOP/activity/service/EOP_activity_service.h"int main(void) {    EOP_activity_init_db();    EOP_activity_http_controller_start();}

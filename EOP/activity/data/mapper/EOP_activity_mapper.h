@@ -15,4 +15,6 @@ EOP_activity_delete_request EOP_activity_mapper_to_delete_history_record(struct 
 
 char *EOP_history_record_to_json(EOP_history_record historyRecord);
 
+long EOP_activity_mapper_userId(struct mg_str json);
+
 #endif //UNTITLED3_EOP_ACTIVITY_CONTROLLER_H

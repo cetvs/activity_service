@@ -7,6 +7,8 @@
 
 #include <stdio.h>
 
-int EOP_activity_controller_start();
+int EOP_activity_init_db();
+
+int EOP_activity_http_controller_start();
 
 #endif //UNTITLED3_EOP_ACTIVITY_CONTROLLER_H

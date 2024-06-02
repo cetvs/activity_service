@@ -38,11 +38,11 @@ EOP_history_record EOP_activity_mapper_to_history_record(struct mg_str json) {
     history_record.isErrorLevel = EOP_activity_get_from_json_isErrorLevel(json);
     history_record.description = EOP_activity_get_from_json_description(json);
     history_record.timestamp = EOP_activity_get_from_json_timestamp(json);
-    printf("userId = %ld\n", history_record.userId);
-    printf("isErrorLevel = %ld\n", history_record.isErrorLevel);
-    printf("description = %s\n", history_record.description);
-    printf("timestamp = %ld\n", history_record.timestamp);
     return history_record;
+}
+
+long EOP_activity_mapper_userId(struct mg_str json) {
+    return EOP_activity_get_from_json_userId(json);
 }
 
 char *EOP_history_record_to_json(EOP_history_record historyRecord) {

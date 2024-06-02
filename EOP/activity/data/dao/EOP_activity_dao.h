@@ -22,6 +22,8 @@ int EOP_activity_select_history_record();
 
 char *EOP_activity_dao_get_history_record_list();
 
+char *EOP_dao_get_history_record_by_userId(long userId);
+
 int EOP_activity_dao_history_record_count();
 
 int EOP_activity_dao_save_history_record(EOP_history_record history_record);
