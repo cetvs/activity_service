@@ -26,7 +26,7 @@ static bool EOP_activity_is_delete(struct mg_str method) {
     return strncmp("DELETE", method.buf, strlen("DELETE")) == 0;
 }
 
-static bool EOP_Attendance_is_put(struct mg_str method) {
+static bool EOP_activity_is_put(struct mg_str method) {
     return strncmp("PUT", method.buf, strlen("PUT")) == 0;
 }
 
@@ -71,15 +71,15 @@ static void EOP_activity_handle_create_one(struct mg_connection *pConnection, st
 }
 
 static void EOP_activity_handle_delete_history_record(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
-    if (EOP_activity_service_delete_history_record(EOP_activity_mapper_to_delete_history_record(pMessage->body)) ==0) {
+    if (EOP_activity_service_delete_history_record(EOP_activity_mapper_to_delete_history_record(pMessage->body)) == 0) {
         EOP_activity_success_200_replay(pConnection);
     } else {
         EOP_activity_error_replay(pConnection);
     }
 }
 
-static void EOP_Attendance_handle_update(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
-    if (EOP_activity_service_update_history_record(EOP_activity_mapper_to_history_record(pMessage->body)) ==0) {
+static void EOP_activity_handle_update(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
+    if (EOP_activity_service_update_history_record(EOP_activity_mapper_to_history_record(pMessage->body)) == 0) {
         EOP_activity_success_200_replay(pConnection);
     } else {
         EOP_activity_error_replay(pConnection);
@@ -107,15 +107,16 @@ void EOP_activity_handle_activity(struct mg_connection *pConnection, struct mg_h
         return;
     }
 
-    // DELETE delete attendance
+    // DELETE delete history_record
     if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_delete"), NULL) && EOP_activity_is_delete(pMessage->method)) {
         EOP_activity_handle_delete_history_record(pConnection, pMessage);
         return;
     }
 
-    // PUT create rows
-    if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_update"), NULL) && EOP_Attendance_is_put(pMessage->method)) {
-        EOP_Attendance_handle_update(pConnection, pMessage);
+    // PUT update history_record
+    if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_update"), NULL) &&
+            EOP_activity_is_put(pMessage->method)) {
+        EOP_activity_handle_update(pConnection, pMessage);
         return;
     }
 }

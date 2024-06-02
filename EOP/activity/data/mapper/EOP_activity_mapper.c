@@ -22,13 +22,13 @@ static long EOP_activity_timestamp(struct mg_str json) {
     return mg_json_get_long(json, "$.timestamp", -1);
 }
 
-static long EOP_Attendance_get_id(struct mg_str json) {
+static long EOP_activity_get_id(struct mg_str json) {
     return mg_json_get_long(json, "$.id", -1);
 }
 
 EOP_activity_delete_request EOP_activity_mapper_to_delete_history_record(struct mg_str json) {
     EOP_activity_delete_request request;
-    request.id = EOP_Attendance_get_id(json);
+    request.id = EOP_activity_get_id(json);
     return request;
 }
 
