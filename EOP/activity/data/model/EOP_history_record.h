@@ -8,8 +8,7 @@
 typedef struct EOP_history_record {
     long id;
     long userId;
-    long alertActionId;
-    long errorActionId;
+    long isErrorLevel;
     char *description;
     long timestamp;
 } EOP_history_record;

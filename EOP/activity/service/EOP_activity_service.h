@@ -15,6 +15,10 @@ char *EOP_activity_service_get_history_record_list();
 
 int EOP_activity_service_delete_history_record(EOP_activity_delete_request request);
 
+int EOP_activity_service_update_history_record(EOP_history_record history_record);
+
 int EOP_activity_service_history_record_count();
+
+int EOP_activity_service_init_dp();
 
 #endif //UNTITLED3_EOP_ACTIVITY_SERVICE_H

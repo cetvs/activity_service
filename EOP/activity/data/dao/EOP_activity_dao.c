@@ -10,40 +10,47 @@
 #include "../model/EOP_history_record.h"
 #include "../mapper/EOP_activity_mapper.h"
 
-void add_to_insert_history_record_userId(sqlite3_stmt *stmt, EOP_history_record history_record) {
+static void add_to_insert_history_record_userId(sqlite3_stmt *stmt, EOP_history_record history_record) {
     sqlite3_bind_int(stmt, 1, history_record.userId); // userId
 }
 
-void add_to_insert_history_record_alertActionId(sqlite3_stmt *stmt, EOP_history_record history_record) {
-    sqlite3_bind_int(stmt, 2, history_record.alertActionId); // userId
+static void add_to_insert_history_record_isErrorLevel(sqlite3_stmt *stmt, EOP_history_record history_record) {
+    sqlite3_bind_int(stmt, 2, history_record.isErrorLevel); // errorActionId
 }
 
-void add_to_insert_history_record_errorActionId(sqlite3_stmt *stmt, EOP_history_record history_record) {
-    sqlite3_bind_int(stmt, 3, history_record.errorActionId); // errorActionId
+static void add_to_insert_history_record_description(sqlite3_stmt *stmt, EOP_history_record history_record) {
+    sqlite3_bind_text(stmt, 3, history_record.description, -1, SQLITE_TRANSIENT); // description
 }
 
-void add_to_insert_history_record_description(sqlite3_stmt *stmt, EOP_history_record history_record) {
-    sqlite3_bind_text(stmt, 4, history_record.description, -1, SQLITE_TRANSIENT); // description
+static void add_to_insert_history_record_timestamp(sqlite3_stmt *stmt, EOP_history_record history_record) {
+    sqlite3_bind_int(stmt, 4, history_record.timestamp); // timestamp
 }
 
-void add_to_insert_history_record_timestamp(sqlite3_stmt *stmt, EOP_history_record history_record) {
-    sqlite3_bind_int(stmt, 5, history_record.timestamp); // timestamp
+static void add_to_insert_history_record_id(sqlite3_stmt *stmt, EOP_history_record history_record) {
+    sqlite3_bind_int(stmt, 5, history_record.userId); // userId
 }
 
-void add_to_insert_history_record(sqlite3_stmt *stmt, EOP_history_record history_record) {
+static void add_to_insert_history_record(sqlite3_stmt *stmt, EOP_history_record history_record) {
     add_to_insert_history_record_userId(stmt, history_record);
-    add_to_insert_history_record_alertActionId(stmt, history_record);
-    add_to_insert_history_record_errorActionId(stmt, history_record);
+    add_to_insert_history_record_isErrorLevel(stmt, history_record);
     add_to_insert_history_record_description(stmt, history_record);
     add_to_insert_history_record_timestamp(stmt, history_record);
 }
 
-char *get_current_dp_Name() {
-    return "activity_v11.db";
+static void add_to_update_history_record(sqlite3_stmt *stmt, EOP_history_record history_record) {
+    add_to_insert_history_record_userId(stmt, history_record);
+    add_to_insert_history_record_isErrorLevel(stmt, history_record);
+    add_to_insert_history_record_description(stmt, history_record);
+    add_to_insert_history_record_timestamp(stmt, history_record);
+    add_to_insert_history_record_id(stmt, history_record);
 }
 
-int open_database(sqlite3 **db) {
-    if (sqlite3_open(get_current_dp_Name(), db) != SQLITE_OK) {
+static char *get_current_dp_name() {
+    return EOP_activity_database_name;
+}
+
+static int EOP_activity_open_database(sqlite3 **db) {
+    if (sqlite3_open(get_current_dp_name(), db) != SQLITE_OK) {
         fprintf(stderr, "Ошибка открытия базы данных: %s\n", sqlite3_errmsg(db));
         sqlite3_close(*db);
         return 1;
@@ -57,7 +64,7 @@ int create_table_request(char *sql) {
 
     // Открытие базы данных
 
-    open_database(&db);
+    EOP_activity_open_database(&db);
 
     if (sqlite3_exec(db, sql, NULL, NULL, &err) != SQLITE_OK) {
         fprintf(stderr, "Ошибка создания таблицы: %s\n", err);
@@ -69,19 +76,17 @@ int create_table_request(char *sql) {
     return 0;
 }
 
-int create_activity_info_table() {
+int EOP_activity_create_activity_info_table() {
     create_table_request(EOP_activity_history_record_table_create);
-//    create_table_request(EOP_activity_alert_action_table_create);
-//    create_table_request(EOP_activity_error_action_table_create);
 }
 
-int drop_table(char *tableName) {
-    printf("drop_table: %s", tableName);
+int EOP_activity_drop_table(char *tableName) {
+    printf("EOP_activity_drop_table: %s", tableName);
     sqlite3 *db;
     char *err;
 
     // Открыть базу данных
-    open_database(&db); //передавать ссылку
+    EOP_activity_open_database(&db); //передавать ссылку
 
     char sql_request[200];
     snprintf(sql_request,
@@ -91,7 +96,7 @@ int drop_table(char *tableName) {
     );
 
     if (sqlite3_exec(db, "", NULL, NULL, &err) != SQLITE_OK) {
-        fprintf(stderr, "Ошибка drop_table: %s\n", err);
+        fprintf(stderr, "Ошибка EOP_activity_drop_table: %s\n", err);
         sqlite3_free(err);
         sqlite3_close(db);
         return 1;
@@ -103,26 +108,26 @@ int drop_table(char *tableName) {
     return 0;
 }
 
-int drop_activity_info_table() {
+int EOP_activity_drop_activity_info_table() {
     sqlite3 *db;
     char *err;
 
     char *historyRecord = "HistoryRecord";
-    drop_table(historyRecord);
+    EOP_activity_drop_table(historyRecord);
 
     char *errorAlert = "ErrorAction";
-    drop_table(errorAlert);
+    EOP_activity_drop_table(errorAlert);
 
     char *actionError = "AlertAction";
-    drop_table(actionError);
+    EOP_activity_drop_table(actionError);
 }
 
-int execute_query(char *sql_query) {
+static int EOP_activity_execute_query(char *sql_query) {
     sqlite3 *db;
     char *err;
     sqlite3_stmt *stmt;
 
-    open_database(&db);
+    EOP_activity_open_database(&db);
 
     // Подготовка запроса
     if (sqlite3_prepare_v2(db, sql_query, -1, &stmt, &err) != SQLITE_OK) {
@@ -158,7 +163,7 @@ int insert_alert_action(EOP_action_alert alertAction) {
     char *err;
 
     // Открыть базу данных
-    open_database(&db);
+    EOP_activity_open_database(&db);
 
     char insertSql[200];
     snprintf(insertSql,
@@ -187,7 +192,7 @@ int EOP_activity_dao_history_record_count() {
     sqlite3_stmt *stmt;
     int count = 0;
 
-    open_database(&db);
+    EOP_activity_open_database(&db);
 
     // Подготовить запрос
     if (sqlite3_prepare_v2(db, EOP_activity_count_history_record, -1, &stmt, NULL) != SQLITE_OK) {
@@ -211,11 +216,11 @@ int EOP_activity_dao_history_record_count() {
     return count;
 }
 
-int select_history_record() {
+int EOP_activity_select_history_record() {
     sqlite3 *db;
 
     // 1. Открыть базу данных
-    open_database(&db);
+    EOP_activity_open_database(&db);
 
     char *err;
     char *sql = "SELECT COUNT(*) FROM HistoryRecord";
@@ -223,7 +228,7 @@ int select_history_record() {
 
     // 2. Подготовить запрос
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, &err) != SQLITE_OK) {
-        fprintf(stderr, "Ошибка подготовки запроса select_history_record: %s\n", err);
+        fprintf(stderr, "Ошибка подготовки запроса EOP_activity_select_history_record: %s\n", err);
         sqlite3_free(err);
         sqlite3_close(db);
         return 1;
@@ -254,7 +259,7 @@ char *EOP_activity_dao_get_history_record_list() {
     char *err;
     sqlite3_stmt *stmt;
 
-    open_database(&db);
+    EOP_activity_open_database(&db);
 
     // Подготовить запрос SELECT
     if (sqlite3_prepare_v2(db, EOP_activity_history_record_select_all, -1, &stmt, NULL) != SQLITE_OK) {
@@ -273,10 +278,9 @@ char *EOP_activity_dao_get_history_record_list() {
         // Извлечь данные из каждого столбца
         history_record.id = sqlite3_column_int(stmt, 0);
         history_record.userId = sqlite3_column_int(stmt, 1);
-        history_record.alertActionId = sqlite3_column_int(stmt, 2);
-        history_record.errorActionId = sqlite3_column_int(stmt, 3);
-        history_record.description = (char *) sqlite3_column_text(stmt, 4);
-        history_record.timestamp = sqlite3_column_int(stmt, 5);
+        history_record.isErrorLevel = sqlite3_column_int(stmt, 2);
+        history_record.description = (char *) sqlite3_column_text(stmt, 3);
+        history_record.timestamp = sqlite3_column_int(stmt, 4);
 
         // Вывести полученные данные
         printf("id: %s\n", history_record.description);
@@ -302,7 +306,7 @@ int EOP_activity_dao_save_history_record(EOP_history_record history_record) {
     sqlite3 *db;
     sqlite3_stmt *stmt;
 
-    open_database(&db);
+    EOP_activity_open_database(&db);
 
     // Подготовить запрос на вставку
     if (sqlite3_prepare_v2(db, EOP_activity_insert_history_record, -1, &stmt, NULL) != SQLITE_OK) {
@@ -335,7 +339,7 @@ int EOP_activity_dao_save_history_record(EOP_history_record history_record) {
 int EOP_activity_dao_delete_history_record(long id) {
     sqlite3 *db;
 
-    int rc = open_database(&db);
+    int rc = EOP_activity_open_database(&db);
 
     sqlite3_stmt *stmt;
     sqlite3_prepare_v2(db,EOP_activity_delete_history_record,-1, &stmt, 0);
@@ -350,5 +354,39 @@ int EOP_activity_dao_delete_history_record(long id) {
         sqlite3_close(db);
         return 1;
     }
+    return 0;
+}
+
+int EOP_activity_dao_update_history_record(EOP_history_record history_record) {
+    sqlite3 *db;
+    sqlite3_stmt *stmt;
+
+    int rc = EOP_activity_open_database(&db);
+
+    // Подготовить запрос на вставку
+    if (sqlite3_prepare_v2(db, EOP_activity_update_history_record, -1, &stmt, NULL) != SQLITE_OK) {
+        fprintf(stderr, "Ошибка подготовки изменения запроса: %s\n", sqlite3_errmsg(db));
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+        return 1;
+    }
+
+    // Вставить данные
+    add_to_update_history_record(stmt, history_record);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        fprintf(stderr, "Ошибка изменения данных: %s\n", sqlite3_errmsg(db));
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+        return 1;
+    }
+
+    // Очистить запрос
+    sqlite3_finalize(stmt);
+
+    // Закрыть базу данных
+    sqlite3_close(db);
+
+    printf("Данные успешно изменены\n");
     return 0;
 }
