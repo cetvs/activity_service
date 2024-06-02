@@ -2,9 +2,12 @@
 // Created by Sergei Tolkachev on 22.05.2024.
 //
 
-#include "../../../third_party/mongoose/mongoose.h"
-#include "../service/EOP_activity_service.h"
-#include "../data/mapper/EOP_activity_mapper.h"
+
+
+#include <string.h>
+#include <third_party/mongoose/mongoose.h>
+#include <EOP/activity/service/EOP_activity_service.h>
+#include <EOP/activity/data/mapper/EOP_activity_mapper.h>
 
 static bool EOP_activity_validate_sort_by_error_level(char *response_list) {
     return response_list != "";
@@ -148,7 +151,7 @@ static void EOP_activity_handle_activity(struct mg_connection *pConnection, stru
     }
 }
 
-static void http_matcher(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
+static void EOP_http_matcher(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
     if (mg_match(pMessage->uri, mg_str("/api/activity#"), NULL)) {
         EOP_activity_handle_activity(pConnection, pMessage);
     } else {
@@ -157,10 +160,23 @@ static void http_matcher(struct mg_connection *pConnection, struct mg_http_messa
     }
 }
 
-void EOP_activity_handle_controller(struct mg_connection *c, int ev, void *ev_data) {
+static void EOP_activity_handle_controller(struct mg_connection *c, int ev, void *ev_data) {
     if (ev == MG_EV_HTTP_MSG) {  // New HTTP request received
         printf("EOP_activity_handle_controller\n");
         struct mg_http_message *hm = (struct mg_http_message *) ev_data;// Parsed HTTP request
-        http_matcher(c, hm);
+        EOP_http_matcher(c, hm);
     }
+}
+
+int EOP_activity_controller_start() {
+    EOP_activity_service_init_db();
+
+    setbuf(stdout, 0);
+    struct mg_mgr mgr;  // Mongoose event manager. Holds all connections
+    mg_mgr_init(&mgr);  // Initialise event manager
+    mg_http_listen(&mgr, "http://0.0.0.0:8010", EOP_activity_handle_controller, NULL);  // Setup listener
+    for (;;) {
+        mg_mgr_poll(&mgr, 1000);  // Infinite event loop
+    }
+    return 0;
 }

@@ -1,3 +1,6 @@
 /Users/sergey-tolk/CLionProjects/untitled3/cmake-build-debug/CMakeFiles/untitled3.dir
 /Users/sergey-tolk/CLionProjects/untitled3/cmake-build-debug/CMakeFiles/edit_cache.dir
 /Users/sergey-tolk/CLionProjects/untitled3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/sergey-tolk/CLionProjects/untitled3/cmake-build-debug/EOP/activity/CMakeFiles/EOP_Activity.dir
+/Users/sergey-tolk/CLionProjects/untitled3/cmake-build-debug/EOP/activity/CMakeFiles/edit_cache.dir
+/Users/sergey-tolk/CLionProjects/untitled3/cmake-build-debug/EOP/activity/CMakeFiles/rebuild_cache.dir

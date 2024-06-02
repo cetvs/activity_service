@@ -6,8 +6,8 @@
 #define UNTITLED3_EOP_ACTIVITY_SERVICE_H
 
 #include <stdio.h>
-#include "../data/model/EOP_history_record.h"
-#include "../data/model/EOP_activity_delete_data.h"
+#include <EOP/activity/data/model/EOP_history_record.h>
+#include <EOP/activity/data/model/EOP_activity_delete_data.h>
 
 int EOP_activity_service_save(EOP_history_record history_record);
 

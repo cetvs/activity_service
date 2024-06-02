@@ -5,8 +5,6 @@
 #ifndef UNTITLED3_EOP_ACTIVITY_SQL_H
 #define UNTITLED3_EOP_ACTIVITY_SQL_H
 
-char *EOP_activity_database_name = "activity_v13.db";
-
 char *EOP_activity_history_record_table_create = "CREATE TABLE IF NOT EXISTS HistoryRecord ("
                                                  "id INTEGER PRIMARY KEY,"
                                                  "userId INTEGER,"
@@ -40,5 +38,6 @@ const char *EOP_activity_drop_table_by_name = "DROP TABLE IF EXISTS %s";
 const char *EOP_activity_delete_history_record = "DELETE FROM HistoryRecord WHERE id = ?";
 
 const char *EOP_activity_update_history_record = "UPDATE HistoryRecord SET userId = ?, isErrorLevel = ?, description = ?, timestamp = ? WHERE id = ?";
-const char *EOP_activity_sort_by_isErrorLevel_history_record ="SELECT * FROM HistoryRecord ORDER BY isErrorLevel DESC;";
+
+const char *EOP_activity_sort_by_isErrorLevel_history_record = "SELECT * FROM HistoryRecord ORDER BY isErrorLevel DESC;";
 #endif //UNTITLED3_EOP_ACTIVITY_SQL_H

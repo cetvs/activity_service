@@ -6,10 +6,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../model/EOP_action_alert.h"
-#include "../EOP_activity_sql.h"
-#include "../model/EOP_history_record.h"
-#include "../mapper/EOP_activity_mapper.h"
+#include <EOP/activity/data/model/EOP_action_alert.h>
+#include <EOP/activity/data/EOP_activity_sql.h>
+#include <EOP/activity/data/model/EOP_history_record.h>
+#include <EOP/activity/data/mapper/EOP_activity_mapper.h>
 
 static void add_to_insert_history_record_userId(sqlite3_stmt *stmt, EOP_history_record history_record) {
     sqlite3_bind_int(stmt, 1, history_record.userId); // userId
@@ -47,7 +47,7 @@ static void add_to_update_history_record(sqlite3_stmt *stmt, EOP_history_record 
 }
 
 static char *get_current_dp_name() {
-    return EOP_activity_database_name;
+    return "activity_v13.db";
 }
 
 static int EOP_activity_open_database(sqlite3 **db) {

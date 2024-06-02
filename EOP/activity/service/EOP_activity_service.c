@@ -5,9 +5,9 @@
 
 #include <printf.h>
 #include <string.h>
-#include "../data/model/EOP_history_record.h"
-#include "../data/dao/EOP_activity_dao.h"
-#include "../data/model/EOP_activity_delete_data.h"
+#include <EOP/activity/data/model/EOP_activity_delete_data.h>
+#include <EOP/activity/data/model/EOP_history_record.h>
+#include <EOP/activity/data/dao/EOP_activity_dao.h>
 
 static int EOP_activity_validate_id(int id) {
     if (id < 1) {
