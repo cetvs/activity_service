@@ -5,6 +5,7 @@
 #include <sqlite3.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "../model/EOP_action_alert.h"
 #include "../EOP_activity_sql.h"
 #include "../model/EOP_history_record.h"
@@ -261,45 +262,57 @@ char *EOP_activity_dao_get_history_record_list() {
 
     EOP_activity_open_database(&db);
 
-    // Подготовить запрос SELECT
-    if (sqlite3_prepare_v2(db, EOP_activity_history_record_select_all, -1, &stmt, NULL) != SQLITE_OK) {
-        fprintf(stderr, "Ошибка подготовки запроса: %s\n", sqlite3_errmsg(db));
-        sqlite3_finalize(stmt);
+    // Подготовка SQL-запроса
+    const char *sql = "SELECT * FROM HistoryRecord";
+
+    // Выполнение запроса
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, &err)) {
+        fprintf(stderr, "Ошибка подготовки запроса: %s\n", err);
+        sqlite3_free(err);
         sqlite3_close(db);
         return "";
     }
 
-    char *response = "[\n";
+    char *json = malloc(1024); // Выделяем память для JSON-строки
+    if (json == NULL) {
+        fprintf(stderr, "Ошибка выделения памяти\n");
+        return NULL;
+    }
 
+    sprintf(json, "[\n");
+    // Вывод результатов
     int rc = sqlite3_step(stmt);
-    // Выполнить запрос и обработать результат
-    while (rc) {
+    while (rc == SQLITE_ROW) {
+        printf("id: %lld\n", sqlite3_column_int64(stmt, 0));
+        printf("userId: %lld\n", sqlite3_column_int64(stmt, 1));
+        printf("isErrorLevel: %lld\n", sqlite3_column_int64(stmt, 2));
+        printf("description: %s\n", sqlite3_column_text(stmt, 3));
+        printf("timestamp: %lld\n", sqlite3_column_int64(stmt, 4));
+        printf("-----\n");
+
         EOP_history_record history_record;
-        // Извлечь данные из каждого столбца
+
         history_record.id = sqlite3_column_int(stmt, 0);
         history_record.userId = sqlite3_column_int(stmt, 1);
         history_record.isErrorLevel = sqlite3_column_int(stmt, 2);
         history_record.description = (char *) sqlite3_column_text(stmt, 3);
         history_record.timestamp = sqlite3_column_int(stmt, 4);
 
-        // Вывести полученные данные
-        printf("id: %s\n", history_record.description);
+        strcat(json, EOP_history_record_to_json(history_record));
+
         rc = sqlite3_step(stmt);
-        strcat(response, EOP_history_record_to_json(history_record));
         if (rc == SQLITE_ROW) {
-            strcat(response, ",\n");
+            strcat(json, ",\n");
         }
     }
-    strcat(response, "\n]");
+    strcat(json, "\n]");
+    printf("json = %s", json);
 
-    // Очистить запрос
+    // Освобождение ресурсов
     sqlite3_finalize(stmt);
-
-    // Закрыть базу данных
     sqlite3_close(db);
-    printf(response);
 
-    return response;
+    return json;
 }
 
 int EOP_activity_dao_save_history_record(EOP_history_record history_record) {
@@ -342,7 +355,7 @@ int EOP_activity_dao_delete_history_record(long id) {
     int rc = EOP_activity_open_database(&db);
 
     sqlite3_stmt *stmt;
-    sqlite3_prepare_v2(db,EOP_activity_delete_history_record,-1, &stmt, 0);
+    sqlite3_prepare_v2(db, EOP_activity_delete_history_record, -1, &stmt, 0);
     sqlite3_bind_int(stmt, 1, id);
 
     rc = sqlite3_step(stmt);

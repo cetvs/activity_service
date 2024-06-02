@@ -46,8 +46,15 @@ EOP_history_record EOP_activity_mapper_to_history_record(struct mg_str json) {
 }
 
 char *EOP_history_record_to_json(EOP_history_record historyRecord) {
-    char buf[512];
-    snprintf(buf, 512, "{\n"
+    size_t buf_len = 256; 
+    char *obj = malloc(buf_len);
+    if (obj == NULL) {
+        fprintf(stderr, "Ошибка выделения памяти\n");
+        return NULL;
+    }
+    obj[0] = '\0';
+
+    snprintf(obj, 512, "{\n"
                        "   \"id\": %ld,\n"
                        "   \"userId\": %ld,\n"
                        "   \"isErrorLevel\": %ld,\n"
@@ -60,5 +67,5 @@ char *EOP_history_record_to_json(EOP_history_record historyRecord) {
              historyRecord.description,
              historyRecord.timestamp
     );
-    return buf;
+    return obj;
 }
