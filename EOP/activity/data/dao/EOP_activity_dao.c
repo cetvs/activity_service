@@ -58,7 +58,7 @@ static int EOP_activity_open_database(sqlite3 **db) {
     return 0;
 }
 
-int create_table_request(char *sql) {
+int EOP_activity_create_table_request(char *sql) {
     sqlite3 *db = NULL;
     char *err;
 
@@ -77,7 +77,7 @@ int create_table_request(char *sql) {
 }
 
 int EOP_activity_create_activity_info_table() {
-    create_table_request(EOP_activity_history_record_table_create);
+    EOP_activity_create_table_request(EOP_activity_history_record_table_create);
 }
 
 int EOP_activity_drop_table(char *tableName) {
@@ -156,7 +156,7 @@ static int EOP_activity_execute_query(char *sql_query) {
     return 0;
 }
 
-int insert_alert_action(EOP_action_alert alertAction) {
+int EOP_activity_insert_alert_action(EOP_action_alert alertAction) {
     printf("insert_action_type actionType name: %s\n", alertAction.name);
 
     sqlite3 *db;
