@@ -10,6 +10,7 @@ static bool EOP_activity_validate_history_record_list(char *response_list) {
     return response_list != "";
 }
 
+
 static bool EOP_activity_validate_history_record_count(int count) {
     return count > -1;
 }
@@ -22,8 +23,20 @@ static bool EOP_activity_is_get(struct mg_str method) {
     return strncmp("GET", method.buf, strlen("GET")) == 0;
 }
 
+static bool EOP_activity_is_delete(struct mg_str method) {
+    return strncmp("DELETE", method.buf, strlen("DELETE")) == 0;
+}
+
+static bool EOP_Attendance_is_put(struct mg_str method) {
+    return strncmp("PUT", method.buf, strlen("PUT")) == 0;
+}
+
 static void EOP_activity_error_replay(struct mg_connection *pConnection) {
     mg_http_reply(pConnection, 400, "", "Error");
+}
+
+static void EOP_activity_success_200_replay(struct mg_connection *pConnection) {
+    mg_http_reply(pConnection, 200, "", "Success");
 }
 
 static void EOP_activity_success_201_replay(struct mg_connection *pConnection) {
@@ -58,6 +71,22 @@ static void EOP_activity_handle_create_one(struct mg_connection *pConnection, st
     }
 }
 
+static void EOP_activity_handle_delete_history_record(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
+    if (EOP_activity_service_delete_history_record(EOP_activity_mapper_to_delete_history_record(pMessage->body)) ==0) {
+        EOP_activity_success_200_replay(pConnection);
+    } else {
+        EOP_activity_error_replay(pConnection);
+    }
+}
+//
+//static void EOP_Attendance_handle_update(struct mg_connection *pConnection, struct mg_http_message *pMessage){
+//    if (EOP_activity_service_delete_history_record(EOP_activity_mapper_to_delete_history_record(pMessage->body)) ==0) {
+//        EOP_activity_success_200_replay(pConnection);
+//    } else {
+//        EOP_activity_error_replay(pConnection);
+//    }
+//}
+
 void EOP_activity_handle_activity(struct mg_connection *pConnection, struct mg_http_message *pMessage) {
     // POST create row
     if (mg_match(pMessage->uri, mg_str("/api/activity/one"), NULL) && EOP_activity_is_post(pMessage->method)) {
@@ -78,6 +107,19 @@ void EOP_activity_handle_activity(struct mg_connection *pConnection, struct mg_h
         EOP_activity_get_history_record_list(pConnection);
         return;
     }
+
+    // DELETE delete attendance
+    if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_delete"), NULL) && EOP_activity_is_delete(pMessage->method)) {
+        EOP_activity_handle_delete_history_record(pConnection, pMessage);
+        return;
+    }
+
+//    // PUT create rows
+//    if (mg_match(pMessage->uri, mg_str("/api/activity/history_record_update"), NULL) && EOP_Attendance_is_put(pMessage->method)) {
+//        EOP_Attendance_handle_update(pConnection, pMessage);
+//        return;
+//    }
+
 }
 
 void http_matcher(struct mg_connection *pConnection, struct mg_http_message *pMessage) {

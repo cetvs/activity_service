@@ -6,10 +6,10 @@
 #define UNTITLED3_ACTION_H
 
 typedef struct EOP_history_record {
-    int id;
+    long id;
     long userId;
-    int alertActionId;
-    int errorActionId;
+    long alertActionId;
+    long errorActionId;
     char *description;
     long timestamp;
 } EOP_history_record;

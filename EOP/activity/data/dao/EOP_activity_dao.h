@@ -27,4 +27,6 @@ int EOP_activity_dao_history_record_count();
 
 int EOP_activity_dao_save_history_record(EOP_history_record history_record);
 
+int EOP_activity_dao_delete_history_record(long id);
+
 #endif //UNTITLED3_EOP_ACTIVITY_DAO_H

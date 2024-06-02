@@ -275,7 +275,7 @@ char *EOP_activity_dao_get_history_record_list() {
         history_record.userId = sqlite3_column_int(stmt, 1);
         history_record.alertActionId = sqlite3_column_int(stmt, 2);
         history_record.errorActionId = sqlite3_column_int(stmt, 3);
-        history_record.description = ( char *) sqlite3_column_text(stmt, 4);
+        history_record.description = (char *) sqlite3_column_text(stmt, 4);
         history_record.timestamp = sqlite3_column_int(stmt, 5);
 
         // Вывести полученные данные
@@ -329,5 +329,26 @@ int EOP_activity_dao_save_history_record(EOP_history_record history_record) {
     sqlite3_close(db);
 
     printf("Данные успешно добавлены в таблицу.\n");
+    return 0;
+}
+
+int EOP_activity_dao_delete_history_record(long id) {
+    sqlite3 *db;
+
+    int rc = open_database(&db);
+
+    sqlite3_stmt *stmt;
+    sqlite3_prepare_v2(db,EOP_activity_delete_history_record,-1, &stmt, 0);
+    sqlite3_bind_int(stmt, 1, id);
+
+    rc = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    if (rc != SQLITE_DONE) {
+        printf("SQL error");
+        sqlite3_free(0);
+        sqlite3_close(db);
+        return 1;
+    }
     return 0;
 }
